@@ -28,6 +28,7 @@ from markups import (
 )
 from PyQt6.QtCore import (
     QFileInfo,
+    QMimeData,
     QMimeDatabase,
     QPoint,
     QPointF,
@@ -42,6 +43,7 @@ from PyQt6.QtGui import (
     QGuiApplication,
     QImage,
     QKeyEvent,
+    QKeySequence,
     QMouseEvent,
     QPainter,
     QPalette,
@@ -256,6 +258,14 @@ class ReTextEdit(QTextEdit):
             actionNextAfterPaste = actions[actions.index(actionPaste) + 1]
             menu.insertAction(actionNextAfterPaste, self.parent.actionPasteImage)
 
+        actionCopy = menu.findChild(QAction, "edit-copy")
+        actionCopy.triggered.disconnect()
+        actionCopy.triggered.connect(self.copy)
+
+        actionCut = menu.findChild(QAction, "edit-cut")
+        actionCut.triggered.disconnect()
+        actionCut.triggered.connect(self.cut)
+
         text = self.toPlainText()
         if not text:
             menu.exec(event.globalPos())
@@ -372,6 +382,10 @@ class ReTextEdit(QTextEdit):
             self.moveCursor(QTextCursor.MoveOperation.Down, mode)
             if self.textCursor().position() == oldPos:
                 self.moveCursor(QTextCursor.MoveOperation.End, mode)
+        elif event.matches(QKeySequence.StandardKey.Copy):
+            self.copy()
+        elif event.matches(QKeySequence.StandardKey.Cut):
+            self.cut()
         elif cursor.selectedText() and self.isSurroundKey(key):
             self.surroundText(cursor, event, key)
         else:
@@ -645,6 +659,18 @@ class ReTextEdit(QTextEdit):
                     self.textCursor().insertText(markdown)
                     return
         return super().insertFromMimeData(source)
+
+    def copy(self):
+        """Copy only text, not html, to make sure it is inserted back verbatim."""
+        if text := self.textCursor().selectedText():
+            text = text.replace("\u2029", "\n")
+            data = QMimeData()
+            data.setText(text)
+            QGuiApplication.clipboard().setMimeData(data)
+
+    def cut(self):
+        self.copy()
+        self.textCursor().removeSelectedText()
 
 
 class LineNumberArea(QWidget):
