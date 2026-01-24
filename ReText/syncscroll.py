@@ -17,7 +17,7 @@
 import time
 from bisect import bisect_left
 
-from PyQt6.QtCore import QPoint
+from PyQt6.QtCore import QPoint, QTimer
 
 
 class SyncScroll:
@@ -54,6 +54,12 @@ class SyncScroll:
         self._preview_scroll_pending_time = 0.0
         self._preview_scroll_pending_count = 0
 
+        # After the page is loaded, monitor it for some time to make sure that the
+        # contents have settled and the scroll position will not change anymore.
+        self.stabilityTimer = QTimer()
+        self.stabilityTimer.setSingleShot(True)
+        self.stabilityTimer.timeout.connect(self._handleRenderingFinished)
+
         self.frame.contentsSizeChanged.connect(self._handlePreviewResized)
         self.frame.loadStarted.connect(self._handleLoadStarted)
         self.frame.loadFinished.connect(self._handleLoadFinished)
@@ -84,6 +90,10 @@ class SyncScroll:
         self.contentIsLoading = True
 
     def _handleLoadFinished(self):
+        self.stabilityTimer.start(500)
+        self.frame.setScrollPosition(self.previewPositionBeforeLoad)
+
+    def _handleRenderingFinished(self):
         self.frame.setScrollPosition(self.previewPositionBeforeLoad)
         self.contentIsLoading = False
         self.frame.getPositionMap(self._setPositionMap)
@@ -195,6 +205,10 @@ class SyncScroll:
         previewScrollPosition can be either a QPointF/QPoint or a numeric Y value.
         """
         if not self._setEditorScrollValue:
+            return
+        if self.contentIsLoading:
+            # The page is still not settled, extend the timer.
+            self.stabilityTimer.start(500)
             return
         # Avoid reacting to our own preview updates
         if self._updating_preview:
