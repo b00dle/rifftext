@@ -21,13 +21,12 @@ import ctypes
 import multiprocessing
 import signal
 import sys
-from os.path import exists, isdir, join
+from os.path import abspath, isdir, join
 
 import markups
 from PyQt6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
-    QFileInfo,
     QLibraryInfo,
     Qt,
     QTranslator,
@@ -43,7 +42,7 @@ from ReText.window import ReTextWindow
 def canonicalize(option):
     if option == '-':
         return option
-    return QFileInfo(option).canonicalFilePath()
+    return abspath(option)
 
 def main():
     multiprocessing.set_start_method('spawn')
@@ -131,13 +130,13 @@ def main():
             window.treeView.setRootIndex(window.fileSystemModel.index(fileName))
             window.actionShowDirectoryTree.setChecked(True)
             window.treeView.setVisible(True)
-        elif exists(fileName):
+        elif fileName == '-':
+            readStdIn = True
+        else:
             window.openFileWrapper(fileName)
             if parser.isSet(previewOption):
                 window.actionPreview.setChecked(True)
                 window.preview(True)
-        elif fileName == '-':
-            readStdIn = True
 
     inputData = ''
     if readStdIn and sys.stdin is not None:

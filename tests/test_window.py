@@ -166,7 +166,8 @@ class TestWindow(unittest.TestCase):
         # Check that file is opened in the existing empty tab
         self.assertEqual(1, self.window.tabWidget.count())
         self.assertEqual('existing_file.md[*]', self.window.windowTitle())
-        self.assertTrue(self.window.currentTab.fileName.endswith('tests/testdata/existing_file.md'))
+        fileName = os.path.join('tests', 'testdata', 'existing_file.md')
+        self.assertTrue(self.window.currentTab.fileName.endswith(fileName))
         self.assertEqual(self.window.tabWidget.tabText(0), 'existing_file')
         self.assertFalse(self.window.isWindowModified())
 
@@ -224,7 +225,8 @@ class TestWindow(unittest.TestCase):
 
         # Check that we have indeed been switched back to the previous tab
         self.assertIs(self.window.currentTab, tab_with_file)
-        self.assertTrue(self.window.currentTab.fileName.endswith('tests/testdata/existing_file.md'))
+        fileName = os.path.join('tests', 'testdata', 'existing_file.md')
+        self.assertTrue(self.window.currentTab.fileName.endswith(fileName))
 
     def test_markupDependentWidgetStates_afterStartWithEmptyTabAndMarkdownAsDefaultMarkup(self):
         self.window = ReTextWindow()

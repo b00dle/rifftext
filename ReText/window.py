@@ -942,7 +942,7 @@ class ReTextWindow(QMainWindow):
     def openFileWrapper(self, fileName):
         if not fileName:
             return
-        fileName = QFileInfo(fileName).canonicalFilePath()
+        fileName = os.path.abspath(fileName)
         exists = False
         for i, tab in enumerate(self.iterateTabs()):
             if tab.fileName == fileName:
@@ -950,7 +950,7 @@ class ReTextWindow(QMainWindow):
                 ex = i
         if exists:
             self.tabWidget.setCurrentIndex(ex)
-        elif QFile.exists(fileName):
+        else:
             noEmptyTab = (
                 (self.ind is None) or
                 self.currentTab.fileName or
@@ -966,7 +966,10 @@ class ReTextWindow(QMainWindow):
                 self.preview(True)
             if fileName:
                 self.fileSystemWatcher.addPath(fileName)
-            self.currentTab.readTextFromFile(fileName)
+            if QFile.exists(fileName):
+                self.currentTab.readTextFromFile(fileName)
+            else:
+                self.currentTab.fileName = fileName
             self.moveToTopOfRecentFileList(self.currentTab.fileName)
 
     def showEncodingDialog(self):

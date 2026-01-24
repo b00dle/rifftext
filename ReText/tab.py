@@ -17,8 +17,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import locale
+import os
 import time
-from os.path import exists, splitext
+from os.path import dirname, exists, isdir, isfile, splitext
 
 from markups import find_markup_class_by_name, get_markup_for_file_name
 from markups.common import MODULE_HOME_PAGE
@@ -51,6 +52,11 @@ class ReTextTab(QSplitter):
     @property
     def fileName(self):
         return self._fileName
+
+    @fileName.setter
+    def fileName(self, newFileName):
+        self._fileName = newFileName
+        self.fileNameChanged.emit()
 
     def __init__(self, parent, fileName, previewState=PreviewDisabled):
         super().__init__(Qt.Orientation.Horizontal, parent=parent)
@@ -527,7 +533,15 @@ class ReTextTab(QSplitter):
             return False
 
     def autoSaveActive(self) -> bool:
-        return (globalSettings.autoSave
-                and not self.forceDisableAutoSave
-                and self.fileName is not None
-                and QFileInfo(self.fileName).isWritable())
+        if not globalSettings.autoSave:
+            return False
+        if self.forceDisableAutoSave:
+            return False
+        if self.fileName is None:
+            return False
+
+        if isfile(self.fileName):
+            return os.access(self.fileName, os.W_OK)
+        else:
+            dirName = dirname(self.fileName)
+            return isdir(dirName) and os.access(dirName, os.W_OK)
