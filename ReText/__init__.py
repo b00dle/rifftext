@@ -85,7 +85,7 @@ configOptions = {
     'spellCheckLocale': '',
     'styleSheet': '',
     'syncScroll': True,
-    'theme': 'coder',
+    'theme': 'dark',
     'tabBarAutoHide': False,
     'tabInsertsSpaces': True,
     'tabWidth': 4,

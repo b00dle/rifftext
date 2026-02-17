@@ -342,13 +342,13 @@ class ReTextWindow(QMainWindow):
         self.symbolBox.addItems(self.usefulChars)
         self.symbolBox.activated.connect(self.insertSymbol)
 
-        # Theme switching
+        # Theme switching (only Dark theme active for now)
         self.themeGroup = QActionGroup(self)
         self.themeActions = {}
         themes = [
-            ('coder', 'Coder'),
-            ('material', 'Material'),
             ('dark', 'Dark')
+            # ('coder', 'Coder'),  # Kept for future use
+            # ('material', 'Material'),  # Kept for future use
         ]
         for themeId, themeName in themes:
             action = self.act(themeName, trigbool=self.themeFunction(themeId))
@@ -422,9 +422,10 @@ class ReTextWindow(QMainWindow):
         menuFormat.addAction(self.actionBold)
         menuFormat.addAction(self.actionItalic)
         menuFormat.addAction(self.actionUnderline)
-        menuTheme = menuEdit.addMenu(self.tr('Theme'))
-        for themeId in ['coder', 'material', 'dark']:
-            menuTheme.addAction(self.themeActions[themeId])
+        # Theme menu hidden - only Dark theme active for now
+        # menuTheme = menuEdit.addMenu(self.tr('Theme'))
+        # for themeId in ['dark']:
+        #     menuTheme.addAction(self.themeActions[themeId])
         menuEdit.addAction(self.actionWebEngine)
         menuEdit.addSeparator()
         menuEdit.addAction(self.actionViewHtml)
