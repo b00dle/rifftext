@@ -908,17 +908,22 @@ class ReTextWindow(QMainWindow):
                         palette.setColor(QPalette.ColorRole.Text, QColor('#24292f'))
                     app.setPalette(palette)
 
-                    # Force complete widget restyle to update icons
-                    for widget in app.allWidgets():
-                        widget.style().unpolish(widget)
-                        widget.style().polish(widget)
-                        widget.update()
+                    # Force icon theme cache clear by toggling theme name
+                    currentTheme = QIcon.themeName()
+                    QIcon.setThemeName('_force_refresh_')
+                    QIcon.setThemeName(currentTheme)
 
-                    # Regenerate all action icons with new palette
+                    # Regenerate all action icons with fresh cache
                     for action in self.findChildren(QAction):
                         iconName = action.property('iconName')
                         if iconName:
                             action.setIcon(self.actIcon(iconName))
+
+                    # Force complete widget restyle
+                    for widget in app.allWidgets():
+                        widget.style().unpolish(widget)
+                        widget.style().polish(widget)
+                        widget.update()
 
                     # Force repaint to apply theme immediately
                     app.processEvents()
