@@ -103,6 +103,51 @@ previewStatesByName = {
 }
 
 
+class DirectoryBrowserWindow(QMainWindow):
+    """Separate window for browsing markdown files in a directory tree"""
+
+    def __init__(self, rootPath, mainWindow, parent=None):
+        QMainWindow.__init__(self, parent)
+        self.mainWindow = mainWindow
+        self.rootPath = rootPath
+
+        self.setWindowTitle(f'rifftext - {rootPath}')
+        self.resize(400, 600)
+
+        # Create tree view
+        self.treeView = QTreeView(self)
+        self.setCentralWidget(self.treeView)
+
+        # Set up file system model with markdown filter
+        self.fileSystemModel = ReTextFileSystemModel(self.treeView)
+        self.fileSystemModel.setRootPath(rootPath)
+
+        # Only show markdown files
+        filters = ['*.md', '*.mkd', '*.markdown']
+        self.fileSystemModel.setNameFilters(filters)
+        self.fileSystemModel.setNameFilterDisables(False)
+
+        self.treeView.setModel(self.fileSystemModel)
+        self.treeView.setRootIndex(self.fileSystemModel.index(rootPath))
+
+        # Hide size, type, date columns - only show name
+        self.treeView.setColumnHidden(1, True)
+        self.treeView.setColumnHidden(2, True)
+        self.treeView.setColumnHidden(3, True)
+        self.treeView.setHeaderHidden(True)
+
+        # Connect double-click to open file
+        self.treeView.doubleClicked.connect(self.onItemDoubleClicked)
+
+    def onItemDoubleClicked(self, index):
+        """Open markdown file in main window when double-clicked"""
+        filePath = self.fileSystemModel.filePath(index)
+        if os.path.isfile(filePath):
+            self.mainWindow.openFileWrapper(filePath)
+            self.mainWindow.raise_()
+            self.mainWindow.activateWindow()
+
+
 class ReTextWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)

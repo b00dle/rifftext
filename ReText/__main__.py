@@ -36,7 +36,7 @@ from PyQt6.QtNetwork import QNetworkProxyFactory
 from PyQt6.QtWidgets import QApplication
 
 from ReText import app_version, cache, globalSettings, getThemePath, packageDir, settings
-from ReText.window import ReTextWindow
+from ReText.window import DirectoryBrowserWindow, ReTextWindow
 
 
 def canonicalize(option):
@@ -141,10 +141,9 @@ def main():
         window.restoreLastOpenedFiles()
     for fileName in fileNames:
         if isdir(fileName):
-            window.fileSystemModel.setRootPath(fileName)
-            window.treeView.setRootIndex(window.fileSystemModel.index(fileName))
-            window.actionShowDirectoryTree.setChecked(True)
-            window.treeView.setVisible(True)
+            # Open directory browser window for folder arguments
+            window.directoryBrowser = DirectoryBrowserWindow(fileName, window)
+            window.directoryBrowser.show()
         elif fileName == '-':
             readStdIn = True
         else:
