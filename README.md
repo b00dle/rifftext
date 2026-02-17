@@ -6,10 +6,10 @@ rifftext is a fork of [ReText](https://github.com/retext-project/retext) extende
 
 ## Features
 
-- 🎨 **Three built-in themes** - Switch between Coder, Material, and Dark styles on the fly
-- 📝 **Live preview** - Side-by-side editor with GitHub-style rendering
-- ⚡ **Powered by PyQt6** - Fast, native, cross-platform
-- 🔧 **Extensible** - Built on Qt with QSS styling support
+- **Three built-in themes** - Switch between Coder, Material, and Dark styles on the fly
+- **Live preview** - Side-by-side editor with GitHub-style rendering
+- **Powered by PyQt6** - Fast, native, cross-platform
+- **Extensible** - Built on Qt with QSS styling support
 
 ## Quick Start
 
@@ -51,7 +51,7 @@ rifftext is built on the excellent [ReText](https://github.com/retext-project/re
 
 ## Roadmap
 
-- [ ] Runtime theme switching (in progress)
+- [x] Runtime theme switching
 - [ ] Folder navigation sidebar
 - [ ] Markdown link preview on hover
 - [ ] Custom theme editor
@@ -59,4 +59,4 @@ rifftext is built on the excellent [ReText](https://github.com/retext-project/re
 
 ---
 
-*Built with ❤️ for makers, writers, and developers*
+*Built for makers, writers, and developers*
