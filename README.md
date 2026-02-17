@@ -6,7 +6,7 @@ rifftext is a fork of [ReText](https://github.com/retext-project/retext) extende
 
 ## Features
 
-- **Three built-in themes** - Switch between Coder, Material, and Dark styles on the fly
+- **Dark theme** - Polished dark mode optimized for long coding sessions
 - **Live preview** - Side-by-side editor with GitHub-style rendering
 - **Powered by PyQt6** - Fast, native, cross-platform
 - **Extensible** - Built on Qt with QSS styling support
@@ -20,13 +20,6 @@ pip install PyQt6 PyQt6-WebEngine chardet Markups[markdown]
 # Run rifftext
 python rifftext.py yourfile.md
 ```
-
-## Themes
-
-Runtime theme switching via context menu:
-- **Coder** - Clean GitHub Primer aesthetic
-- **Material** - Google Material Design
-- **Dark** - Polished dark mode for focus
 
 ## Development
 
@@ -51,10 +44,10 @@ rifftext is built on the excellent [ReText](https://github.com/retext-project/re
 
 ## Roadmap
 
-- [x] Runtime theme switching
+- [x] Dark theme with QSS styling
+- [ ] Additional themes (Coder, Material available in themes/)
 - [ ] Folder navigation sidebar
 - [ ] Markdown link preview on hover
-- [ ] Custom theme editor
 - [ ] Plugin system
 
 ---
