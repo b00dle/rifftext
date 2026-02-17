@@ -26,7 +26,7 @@ from subprocess import Popen
 
 import markups
 
-from ReText import app_version, getBundledIcon, globalCache, globalSettings
+from ReText import app_version, getBundledIcon, getThemePath, globalCache, globalSettings
 from ReText.config import ConfigDialog, setIconThemeFromSettings
 from ReText.dialogs import EncodingDialog, HtmlDialog, LocaleDialog
 from ReText.filesystemmodel import ReTextFileSystemModel
@@ -341,6 +341,22 @@ class ReTextWindow(QMainWindow):
         self.symbolBox.addItem(self.tr('Symbols'))
         self.symbolBox.addItems(self.usefulChars)
         self.symbolBox.activated.connect(self.insertSymbol)
+
+        # Theme switching
+        self.themeGroup = QActionGroup(self)
+        self.themeActions = {}
+        themes = [
+            ('coder', 'Coder'),
+            ('material', 'Material'),
+            ('dark', 'Dark')
+        ]
+        for themeId, themeName in themes:
+            action = self.act(themeName, trigbool=self.themeFunction(themeId))
+            if themeId == globalSettings.theme:
+                action.setChecked(True)
+            self.themeGroup.addAction(action)
+            self.themeActions[themeId] = action
+
         self.updateStyleSheet()
         menubar = self.menuBar()
         menuFile = menubar.addMenu(self.tr('&File'))
@@ -406,6 +422,9 @@ class ReTextWindow(QMainWindow):
         menuFormat.addAction(self.actionBold)
         menuFormat.addAction(self.actionItalic)
         menuFormat.addAction(self.actionUnderline)
+        menuTheme = menuEdit.addMenu(self.tr('Theme'))
+        for themeId in ['coder', 'material', 'dark']:
+            menuTheme.addAction(self.themeActions[themeId])
         menuEdit.addAction(self.actionWebEngine)
         menuEdit.addSeparator()
         menuEdit.addAction(self.actionViewHtml)
@@ -858,6 +877,21 @@ class ReTextWindow(QMainWindow):
 
     def markupFunction(self, markup):
         return lambda: self.setDefaultMarkup(markup)
+
+    def themeFunction(self, themeName):
+        return lambda: self.applyTheme(themeName)
+
+    def applyTheme(self, themeName):
+        """Apply a theme by loading its QSS file and updating the application stylesheet"""
+        globalSettings.theme = themeName
+        themePath = getThemePath(themeName)
+        if themePath:
+            try:
+                with open(themePath, 'r', encoding='utf-8') as sheetfile:
+                    qApp.setStyleSheet(sheetfile.read())
+            except OSError as ex:
+                QMessageBox.warning(self, self.tr('Theme Error'),
+                    self.tr(f'Could not load theme "{themeName}": {ex}'))
 
     def openFunction(self, fileName):
         return lambda: self.openFileWrapper(fileName)

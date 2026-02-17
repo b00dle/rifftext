@@ -45,6 +45,12 @@ packageDir = abspath(dirname(__file__))
 def getBundledIcon(iconName):
     return join(packageDir, 'icons', iconName + '.png')
 
+def getThemePath(themeName):
+    """Get the path to a theme file"""
+    themesDir = abspath(join(packageDir, '..', 'themes'))
+    themePath = join(themesDir, f'{themeName}.qss')
+    return themePath if themePath else None
+
 
 configOptions = {
     'appStyleSheet': '',
@@ -79,6 +85,7 @@ configOptions = {
     'spellCheckLocale': '',
     'styleSheet': '',
     'syncScroll': True,
+    'theme': 'coder',
     'tabBarAutoHide': False,
     'tabInsertsSpaces': True,
     'tabWidth': 4,

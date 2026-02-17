@@ -35,7 +35,7 @@ from PyQt6.QtDBus import QDBusConnection, QDBusInterface
 from PyQt6.QtNetwork import QNetworkProxyFactory
 from PyQt6.QtWidgets import QApplication
 
-from ReText import app_version, cache, globalSettings, packageDir, settings
+from ReText import app_version, cache, globalSettings, getThemePath, packageDir, settings
 from ReText.window import ReTextWindow
 
 
@@ -95,9 +95,24 @@ def main():
 
     print('Using configuration file:', settings.fileName())
     print('Using cache file:', cache.fileName())
+
+    # Load theme
+    themePath = getThemePath(globalSettings.theme)
+    if themePath:
+        try:
+            with open(themePath, 'r', encoding='utf-8') as sheetfile:
+                app.setStyleSheet(sheetfile.read())
+        except OSError as ex:
+            print(f'Warning: Could not load theme "{globalSettings.theme}": {ex}')
+
+    # Legacy support for custom stylesheets
     if globalSettings.appStyleSheet:
-        with open(globalSettings.appStyleSheet) as sheetfile:
-            app.setStyleSheet(sheetfile.read())
+        try:
+            with open(globalSettings.appStyleSheet) as sheetfile:
+                app.setStyleSheet(sheetfile.read())
+        except OSError as ex:
+            print(f'Warning: Could not load custom stylesheet: {ex}')
+
     window = ReTextWindow()
 
     # ReText can change directory when loading files, so we
