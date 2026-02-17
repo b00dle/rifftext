@@ -889,9 +889,10 @@ class ReTextWindow(QMainWindow):
             try:
                 with open(themePath, 'r', encoding='utf-8') as sheetfile:
                     stylesheet = sheetfile.read()
-                    qApp.setStyleSheet(stylesheet)
+                    app = QApplication.instance()
+                    app.setStyleSheet(stylesheet)
                     # Force repaint to apply theme immediately
-                    qApp.processEvents()
+                    app.processEvents()
             except Exception as ex:
                 QMessageBox.warning(self, 'Theme Error',
                     f'Could not load theme "{themeName}": {str(ex)}')
