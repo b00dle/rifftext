@@ -569,6 +569,8 @@ class ReTextWindow(QMainWindow):
             shct = QKeySequence(shct)
         if icon:
             action = QAction(self.actIcon(icon), name, self)
+            # Store icon name for theme switching
+            action.setProperty('iconName', icon)
         else:
             action = QAction(name, self)
         if trig:
@@ -911,6 +913,12 @@ class ReTextWindow(QMainWindow):
                         widget.style().unpolish(widget)
                         widget.style().polish(widget)
                         widget.update()
+
+                    # Regenerate all action icons with new palette
+                    for action in self.findChildren(QAction):
+                        iconName = action.property('iconName')
+                        if iconName:
+                            action.setIcon(self.actIcon(iconName))
 
                     # Force repaint to apply theme immediately
                     app.processEvents()
