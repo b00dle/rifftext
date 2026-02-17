@@ -891,6 +891,21 @@ class ReTextWindow(QMainWindow):
                     stylesheet = sheetfile.read()
                     app = QApplication.instance()
                     app.setStyleSheet(stylesheet)
+
+                    # Update palette for icon colors
+                    palette = app.palette()
+                    if themeName == 'dark':
+                        # Dark theme: light icons on dark background
+                        palette.setColor(QPalette.ColorRole.WindowText, QColor('#d4d4d4'))
+                        palette.setColor(QPalette.ColorRole.ButtonText, QColor('#d4d4d4'))
+                        palette.setColor(QPalette.ColorRole.Text, QColor('#d4d4d4'))
+                    else:
+                        # Light themes: dark icons on light background
+                        palette.setColor(QPalette.ColorRole.WindowText, QColor('#24292f'))
+                        palette.setColor(QPalette.ColorRole.ButtonText, QColor('#24292f'))
+                        palette.setColor(QPalette.ColorRole.Text, QColor('#24292f'))
+                    app.setPalette(palette)
+
                     # Force repaint to apply theme immediately
                     app.processEvents()
             except Exception as ex:
