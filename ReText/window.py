@@ -906,6 +906,12 @@ class ReTextWindow(QMainWindow):
                         palette.setColor(QPalette.ColorRole.Text, QColor('#24292f'))
                     app.setPalette(palette)
 
+                    # Force complete widget restyle to update icons
+                    for widget in app.allWidgets():
+                        widget.style().unpolish(widget)
+                        widget.style().polish(widget)
+                        widget.update()
+
                     # Force repaint to apply theme immediately
                     app.processEvents()
             except Exception as ex:
