@@ -2,6 +2,12 @@
  * Easy on the eyes, professional aesthetic
  */
 
+/* Global defaults */
+QWidget {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+
 /* Main Window */
 QMainWindow {
     background-color: #1e1e1e;

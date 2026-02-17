@@ -2,6 +2,12 @@
  * Clean, modern, developer-focused aesthetic
  */
 
+/* Global defaults */
+QWidget {
+    background-color: #ffffff;
+    color: #24292f;
+}
+
 /* Main Window */
 QMainWindow {
     background-color: #ffffff;

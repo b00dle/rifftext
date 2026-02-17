@@ -888,10 +888,13 @@ class ReTextWindow(QMainWindow):
         if themePath:
             try:
                 with open(themePath, 'r', encoding='utf-8') as sheetfile:
-                    qApp.setStyleSheet(sheetfile.read())
-            except OSError as ex:
-                QMessageBox.warning(self, self.tr('Theme Error'),
-                    self.tr(f'Could not load theme "{themeName}": {ex}'))
+                    stylesheet = sheetfile.read()
+                    qApp.setStyleSheet(stylesheet)
+                    # Force repaint to apply theme immediately
+                    qApp.processEvents()
+            except Exception as ex:
+                QMessageBox.warning(self, 'Theme Error',
+                    f'Could not load theme "{themeName}": {str(ex)}')
 
     def openFunction(self, fileName):
         return lambda: self.openFileWrapper(fileName)

@@ -2,6 +2,12 @@
  * Soft colors, elevation, modern design language
  */
 
+/* Global defaults */
+QWidget {
+    background-color: #fafafa;
+    color: #212121;
+}
+
 /* Main Window */
 QMainWindow {
     background-color: #fafafa;
